@@ -10,6 +10,9 @@ var mockRequire = function(name) {
 var mockProcess = {
   exit: function(code) {
     mockProcess.result = code;
+  },
+  cwd: function() {
+    return '/homedir/';
   }
 }
 
@@ -31,8 +34,8 @@ describe("Runner", function() {
   });
 
   it("should turn commands to paths", function() {
-    var runner = new Runner();
-    assert.equal(runner.commandAsPath('default'), './hub/default');
+    var runner = new Runner({}, null, mockProcess);
+    assert.equal(runner.commandAsPath('default'), '/homedir/hub/default');
   });
 
   it("should attempt loading a command module", function() {
@@ -42,7 +45,7 @@ describe("Runner", function() {
     mockProcess.result = 0;
     mockRequire.result = null;
     runner.run();
-    assert.equal(mockRequire.result, "./hub/go");
+    assert.equal(mockRequire.result, "/homedir/hub/go");
   });
 
   it("should attempt running a run method", function() {
